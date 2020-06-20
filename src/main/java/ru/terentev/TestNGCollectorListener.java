@@ -1,10 +1,11 @@
 package ru.terentev;
 
-import io.qameta.allure.Allure;
 import io.qameta.allure.TmsLink;
 import org.testng.IInvokedMethod;
 import org.testng.IInvokedMethodListener;
 import org.testng.ITestResult;
+import ru.terentev.Models.Test;
+import ru.terentev.Models.TestResult;
 
 import java.time.Instant;
 import java.time.LocalDateTime;

@@ -1,4 +1,4 @@
-package ru.terentev;
+package ru.terentev.Models;
 
 public enum TestResult {
     Passed("PASSED"),
