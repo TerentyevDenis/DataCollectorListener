@@ -32,7 +32,7 @@ public class TestNameProcessor {
             throw  new IllegalStateException("TestRail password doesn't set. Define it using CollectorListenersCapabilities.setPassword(\"password\");");
         }
 
-        if (CollectorListenersCapabilities.getPassword()==null){
+        if (CollectorListenersCapabilities.getUrl()==null){
             throw  new IllegalStateException("TestRail uri doesn't set. Define it using CollectorListenersCapabilities.setUrl(\"url\");");
         }
 

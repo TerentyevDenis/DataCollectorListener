@@ -11,9 +11,14 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 
+import static ru.terentev.DBhelper.createTable;
+import static ru.terentev.DBhelper.putTestInDB;
 import static ru.terentev.TestNameProcessor.getCaseIdFromURL;
 
 public class TestNGCollectorListener implements IInvokedMethodListener {
+    static {
+        createTable();
+    }
     public void beforeInvocation(IInvokedMethod method, ITestResult testResult) {
 
     }
@@ -32,12 +37,20 @@ public class TestNGCollectorListener implements IInvokedMethodListener {
                 caseId = getCaseIdFromURL(tmsURL.value());
             }
             test.setTms_id(caseId);
-            test.setTms_url(tmsURL.value());
+            if (CollectorListenersCapabilities.getUrl()!=null) {
+                String url = CollectorListenersCapabilities.getUrl();
+                if (!url.endsWith("/"))
+                {
+                    url += "/";
+                }
+                test.setTms_url(url + "index.php?/cases/view/" + caseId);
+            }
             test.setTestName(TestNameProcessor.getTestName(method,testResult,caseId));
             test.setElapsedTime(testResult.getEndMillis() - testResult.getStartMillis());
             test.setStartTime(LocalDateTime.ofInstant(Instant.ofEpochMilli(testResult.getStartMillis()), ZoneId.systemDefault()));
             test.setTestResult(TestResult.transformNGtoTR(testResult.getStatus()));
             System.out.println(test);
+            putTestInDB(test);
         }
     }
 }
