@@ -13,6 +13,8 @@ import java.time.ZoneId;
 
 import static ru.terentev.DBhelper.createTable;
 import static ru.terentev.DBhelper.putTestInDB;
+import static ru.terentev.EnvCollector.getBuildId;
+import static ru.terentev.EnvCollector.getBuildURL;
 import static ru.terentev.TestNameProcessor.getCaseIdFromURL;
 
 public class TestNGCollectorListener implements IInvokedMethodListener {
@@ -37,8 +39,8 @@ public class TestNGCollectorListener implements IInvokedMethodListener {
                 caseId = getCaseIdFromURL(tmsURL.value());
             }
             test.setTms_id(caseId);
-            if (CollectorListenersCapabilities.getUrl()!=null) {
-                String url = CollectorListenersCapabilities.getUrl();
+            if (CollectorListenersCapabilities.getTMSUrl()!=null) {
+                String url = CollectorListenersCapabilities.getTMSUrl();
                 if (!url.endsWith("/"))
                 {
                     url += "/";
@@ -49,8 +51,17 @@ public class TestNGCollectorListener implements IInvokedMethodListener {
             test.setElapsedTime(testResult.getEndMillis() - testResult.getStartMillis());
             test.setStartTime(LocalDateTime.ofInstant(Instant.ofEpochMilli(testResult.getStartMillis()), ZoneId.systemDefault()));
             test.setTestResult(TestResult.transformNGtoTR(testResult.getStatus()));
-            System.out.println(test);
-            putTestInDB(test);
+            String buildId = getBuildId();
+            String buildURL = getBuildURL();
+            if (buildId!=null){
+                test.setBuild_id(buildId);
+            }
+            if (buildURL!=null){
+                test.setBuild_URL(buildURL);
+            }
+            if (CollectorListenersCapabilities.getCollectDataOnlyInJenkins()&&test.getBuild_id()!=null||!CollectorListenersCapabilities.getCollectDataOnlyInJenkins()) {
+                putTestInDB(test);
+            }
         }
     }
 }

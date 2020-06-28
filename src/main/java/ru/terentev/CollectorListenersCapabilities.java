@@ -1,12 +1,17 @@
 package ru.terentev;
 
 public class CollectorListenersCapabilities {
-    private static Boolean useTMSTestName=false;
+    private static Boolean useTMSTestName = false;
     private static String url;
     private static String username;
     private static String password;
-    private static Boolean enable=true;
-    private static Boolean runOnlyInJenkins=false;
+    private static Boolean enable = true;
+
+    public static void setCollectDataOnlyInJenkins(Boolean collectDataOnlyInJenkins) {
+        CollectorListenersCapabilities.collectDataOnlyInJenkins = collectDataOnlyInJenkins;
+    }
+
+    private static Boolean collectDataOnlyInJenkins = false;
     private static String dBUrl;
     private static String dBUser;
     private static String dBPassword;
@@ -35,32 +40,24 @@ public class CollectorListenersCapabilities {
         CollectorListenersCapabilities.dBPassword = dBPassword;
     }
 
-    public static String getUrl() {
+    public static String getTMSUrl() {
         return url;
     }
 
-    public static void setUrl(String url) {
+    public static void setTMSUrl(String url) {
         CollectorListenersCapabilities.url = url;
     }
 
-    public static void uploadTMSTestName(){
-        useTMSTestName=true;
+    public static void setUseTMSTestName(boolean useTMSTestName) {
+        CollectorListenersCapabilities.useTMSTestName = useTMSTestName;
     }
 
-    public static void notUploadTMSTestName(){
-        useTMSTestName=false;
+    public static void enable() {
+        enable = true;
     }
 
-    public static void enable(){
-        enable=true;
-    }
-
-    public void disable(){
-        enable=false;
-    }
-
-    public void collectOnlyInJenkins(){
-        runOnlyInJenkins=true;
+    public static void disable() {
+        enable = false;
     }
 
     public static String getPassword() {
@@ -87,7 +84,7 @@ public class CollectorListenersCapabilities {
         return enable;
     }
 
-    public static Boolean getRunOnlyInJenkins() {
-        return runOnlyInJenkins;
+    public static Boolean getCollectDataOnlyInJenkins() {
+        return collectDataOnlyInJenkins;
     }
 }

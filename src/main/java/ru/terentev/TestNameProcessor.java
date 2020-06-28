@@ -32,11 +32,11 @@ public class TestNameProcessor {
             throw  new IllegalStateException("TestRail password doesn't set. Define it using CollectorListenersCapabilities.setPassword(\"password\");");
         }
 
-        if (CollectorListenersCapabilities.getUrl()==null){
+        if (CollectorListenersCapabilities.getTMSUrl()==null){
             throw  new IllegalStateException("TestRail uri doesn't set. Define it using CollectorListenersCapabilities.setUrl(\"url\");");
         }
 
-        APIClient client = new APIClient(CollectorListenersCapabilities.getUrl());
+        APIClient client = new APIClient(CollectorListenersCapabilities.getTMSUrl());
         client.setUser(CollectorListenersCapabilities.getUsername());
         client.setPassword(CollectorListenersCapabilities.getPassword());
         JSONObject c = null;
