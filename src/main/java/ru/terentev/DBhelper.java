@@ -2,8 +2,6 @@ package ru.terentev;
 
 import java.sql.*;
 
-import org.postgresql.*;
-import org.postgresql.Driver;
 import ru.terentev.Models.Test;
 
 public class DBhelper {
@@ -12,6 +10,8 @@ public class DBhelper {
     static String RESULTS_TABLE = "results";
     static String TEST_TMS_ID = "tmsId";
     static String TEST_NAME = "name";
+    static String TEST_SUITE = "suite";
+    static String TEST_SECTION = "section";
     static String TEST_TMS_URL = "tmsURL";
     static String RESULT_ELAPSED_TIME = "elapsedTime";
     static String RESULT_START_TIME = "startTime";
@@ -30,6 +30,8 @@ public class DBhelper {
             String createTestTable = "CREATE TABLE IF NOT EXISTS " + TEST_TABLE +
                     "(" + TEST_TMS_ID + " bigint primary key," +
                     TEST_NAME + " text NOT NULL," +
+                    TEST_SECTION + " text," +
+                    TEST_SUITE + " text," +
                     TEST_TMS_URL + " text)";
             String createResultTable = "CREATE TABLE IF NOT EXISTS " + RESULTS_TABLE +
                     "(" + RESULT_ID + " bigserial primary key," +
@@ -59,18 +61,29 @@ public class DBhelper {
             qwrGetTests.setLong(1,Long.valueOf(test.getTms_id()));
             ResultSet tests = qwrGetTests.executeQuery();
             if (!tests.next()){ //add test
-                String createTest = "INSERT INTO "+TEST_TABLE+" ("+TEST_TMS_ID+","+TEST_NAME+","+TEST_TMS_URL+") VALUES (?,?,?)";
+                test.updateTestName();
+                String createTest = "INSERT INTO "+TEST_TABLE+" ("+TEST_TMS_ID+","+TEST_NAME+","+TEST_SECTION+","+TEST_SUITE+","+TEST_TMS_URL+") VALUES (?,?,?,?,?)";
                 PreparedStatement qwrCreateTest = connection.prepareStatement(createTest);
                 qwrCreateTest.setLong(1,Long.valueOf(test.getTms_id()));
                 qwrCreateTest.setString(2,test.getTestName());
-                qwrCreateTest.setString(3,test.getTms_url());
+                qwrCreateTest.setString(3,test.getTestSection());
+                qwrCreateTest.setString(4,test.getTestSuite());
+                qwrCreateTest.setString(5,test.getTms_url());
                 qwrCreateTest.execute();
+                System.out.println(test);
             }else { //update test name if changed
-                if (!tests.getString(TEST_NAME).equals(test.getTestName())){
-                    String updateTest = "UPDATE "+TEST_TABLE+" SET "+TEST_NAME+"=? WHERE "+TEST_TMS_ID+"="+test.getTms_id();
-                    PreparedStatement qwrUpdateTest = connection.prepareStatement(updateTest);
-                    qwrUpdateTest.setString(1,test.getTestName());
-                    qwrUpdateTest.execute();
+                if (CollectorListenersCapabilities.getUpdateCases()) {
+                    test.updateTestName();
+                    if (!tests.getString(TEST_NAME).equals(test.getTestName())
+                            || !tests.getString(TEST_SECTION).equals(test.getTestSection())
+                            || !tests.getString(TEST_SUITE).equals(test.getTestSuite())) {
+                        String updateTest = "UPDATE " + TEST_TABLE + " SET " + TEST_NAME + "=?, " + TEST_SUITE + "=?, " + TEST_SECTION + "=? " + " WHERE " + TEST_TMS_ID + "=" + test.getTms_id();
+                        PreparedStatement qwrUpdateTest = connection.prepareStatement(updateTest);
+                        qwrUpdateTest.setString(1, test.getTestName());
+                        qwrUpdateTest.setString(2, test.getTestSuite());
+                        qwrUpdateTest.setString(3, test.getTestSection());
+                        qwrUpdateTest.execute();
+                    }
                 }
             }
             //insert test result

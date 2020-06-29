@@ -1,4 +1,4 @@
-package ru.terentev;
+package ru.terentev.Models;
 
 public class EnvCollector {
     static String BUILD_ID = "BUILD_ID";

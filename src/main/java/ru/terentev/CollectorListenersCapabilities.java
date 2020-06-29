@@ -6,15 +6,23 @@ public class CollectorListenersCapabilities {
     private static String username;
     private static String password;
     private static Boolean enable = true;
+    private static Boolean collectDataOnlyInJenkins = false;
+    private static Boolean updateCases = false;
+    private static String dBUrl;
+    private static String dBUser;
+    private static String dBPassword;
 
     public static void setCollectDataOnlyInJenkins(Boolean collectDataOnlyInJenkins) {
         CollectorListenersCapabilities.collectDataOnlyInJenkins = collectDataOnlyInJenkins;
     }
 
-    private static Boolean collectDataOnlyInJenkins = false;
-    private static String dBUrl;
-    private static String dBUser;
-    private static String dBPassword;
+    public static Boolean getUpdateCases() {
+        return updateCases;
+    }
+
+    public static void setUpdateCases(Boolean updateCases) {
+        CollectorListenersCapabilities.updateCases = updateCases;
+    }
 
     public static String getdBUrl() {
         return dBUrl;
